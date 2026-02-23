@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "233253700959",
+    "project_id": "pisal-shoeapp-2026",
+    "storage_bucket": "pisal-shoeapp-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233253700959:android:de621f065518c37263e2ea",
+        "android_client_info": {
+          "package_name": "com.example.shoe_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLd1j_EcYi81p0pCmJaW5kbTwoCONf6o0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
