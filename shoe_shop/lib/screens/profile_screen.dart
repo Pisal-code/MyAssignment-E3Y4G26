@@ -88,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
-          name = data['name'] ?? "User";
+          name = data['name'] ?? "";
           photoUrl = data['profileUrl'] ?? "";
         }
 
@@ -104,7 +104,7 @@ class ProfileScreen extends StatelessWidget {
                 radius: 35,
                 backgroundImage: photoUrl.isNotEmpty
                     ? AssetImage(photoUrl)
-                    : const AssetImage("") as ImageProvider,
+                    : const AssetImage("user/profile.jpg") as ImageProvider,
               ),
               const SizedBox(width: 15),
               Expanded(

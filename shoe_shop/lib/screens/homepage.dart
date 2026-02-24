@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
 
         if (snapshot.hasData && snapshot.data!.exists) {
           final data = snapshot.data!.data() as Map<String, dynamic>;
-          name = data['name'] ?? "User Name";
+          name = data['name'] ?? "";
           email = data['email'] ?? email;
           photoUrl = data['profileUrl'] ?? "";
         }
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
             profileImage = NetworkImage(photoUrl);
           }
         } else {
-          profileImage = const AssetImage("assets/shoes/shoe1.png");
+          profileImage = const AssetImage("user/profile.jpg");
         }
 
         return Row(
