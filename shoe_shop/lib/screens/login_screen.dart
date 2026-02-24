@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
-  bool _obscurePassword = true; // Toggle password visibility
+  bool _obscurePassword = true;
 
   void login() async {
     setState(() => _isLoading = true);
@@ -28,73 +28,100 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final user = userCredential.user;
       if (user != null) {
-        // Firestore: create user document if not exists
-        final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+        final userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.uid);
         final snapshot = await userDoc.get();
 
         if (!snapshot.exists) {
           await userDoc.set({
-            'name': 'User Name', // Default name; can be updated later
+            'name': 'User Name',
             'email': user.email,
-            'profileUrl': '', // Default profile image
+            'profileUrl': '',
             'createdAt': FieldValue.serverTimestamp(),
           });
         }
 
-        // Navigate to MainScreen
         Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (_) => const MainScreen()),
         );
       }
     } on FirebaseAuthException catch (e) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.black,
+          content: Text(
+            e.message ?? "Login failed",
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: Colors.black),
+      prefixIcon: Icon(icon, color: Colors.black),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black, width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // 🤍 White background
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Text("Login",
-                    style:
-                        TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 24),
+                const Text(
+                  "Login",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // 🖤 Black text
+                  ),
+                ),
+                const SizedBox(height: 40),
 
-                // Email TextField
+                // Email Field
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
+                  style: const TextStyle(color: Colors.black),
+                  decoration:
+                      _inputDecoration("Email", Icons.email_outlined),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 20),
 
-                // Password TextField with eye toggle
+                // Password Field
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    prefixIcon: const Icon(Icons.lock_outline),
+                  style: const TextStyle(color: Colors.black),
+                  decoration: _inputDecoration(
+                    "Password",
+                    Icons.lock_outline,
+                  ).copyWith(
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword
                             ? Icons.visibility_off
                             : Icons.visibility,
+                        color: Colors.black,
                       ),
                       onPressed: () {
                         setState(() {
@@ -104,19 +131,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 40),
 
                 // Login Button
                 _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const CircularProgressIndicator(color: Colors.black)
                     : SizedBox(
                         width: double.infinity,
-                        height: 48,
+                        height: 50,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black, // ⚫ Black button
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                           onPressed: login,
                           child: const Text(
                             "Login",
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, // 🤍 White text
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
