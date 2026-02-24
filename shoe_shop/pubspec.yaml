@@ -57,7 +57,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-      - assets/brands/
       - assets/shoes/
       - assets/user/
   # The following line ensures that the Material Icons font is

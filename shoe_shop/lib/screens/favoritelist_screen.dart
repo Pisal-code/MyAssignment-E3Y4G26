@@ -40,7 +40,7 @@ class FavoritelistScreen extends StatelessWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: favoritelist.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final shoe = favoritelist[index];
 
@@ -139,6 +139,7 @@ class FavoriteListItem extends StatelessWidget {
             BoxShadow(
               blurRadius: 10, 
               offset: const Offset(0, 4), 
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.05)
             )
           ],

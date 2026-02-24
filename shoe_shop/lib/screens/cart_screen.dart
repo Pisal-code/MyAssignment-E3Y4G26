@@ -106,6 +106,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       }
     } catch (e) {
       if (mounted) Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Order failed: $e")),
       );

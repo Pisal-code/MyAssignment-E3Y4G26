@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shoe_shop/models/shoe.dart';
 import '../widgets/shoe_card.dart';
-import 'shoe_detail_screen.dart'; // Ensure this is imported
+import 'shoe_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  final Function(Shoe) onAddToFavoritelist;
+  final List<Shoe> favoritelist;
 
-  const SearchScreen({super.key, required this.onAddToFavoritelist});
+  const SearchScreen({
+    super.key,
+    required this.favoritelist, required Function(Shoe) onAddToFavoritelist,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -23,18 +26,38 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  // FIXED: Added docId to the fromMap constructor so Firestore knows which shoe is being updated
+  // Firestore stream with search filter
   Stream<List<Shoe>> _shoeStream() {
     return FirebaseFirestore.instance.collection('shoes').snapshots().map(
-        (snapshot) => snapshot.docs
-            .map((doc) => Shoe.fromMap(
-                  // ignore: unnecessary_cast
-                  doc.data() as Map<String, dynamic>, 
-                  docId: doc.id, // <--- CRITICAL FIX
-                ))
-            .where((shoe) =>
-                shoe.name.toLowerCase().contains(_searchQuery.toLowerCase()))
-            .toList());
+          (snapshot) => snapshot.docs
+              // ignore: unnecessary_cast
+              .map((doc) => Shoe.fromMap(doc.data() as Map<String, dynamic>, docId: doc.id))
+              .where((shoe) => shoe.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+              .toList(),
+        );
+  }
+
+  // Toggle favorite both locally and in Firestore
+  Future<void> toggleFavorite(Shoe shoe) async {
+    final newValue = !shoe.isFavorite;
+
+    // Update Firestore
+    await FirebaseFirestore.instance
+        .collection('shoes')
+        .doc(shoe.id)
+        .update({'is_favorite': newValue});
+
+    // Update local list
+    setState(() {
+      shoe.isFavorite = newValue;
+      if (newValue) {
+        if (!widget.favoritelist.any((s) => s.id == shoe.id)) {
+          widget.favoritelist.add(shoe);
+        }
+      } else {
+        widget.favoritelist.removeWhere((s) => s.id == shoe.id);
+      }
+    });
   }
 
   @override
@@ -61,11 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: TextField(
                         controller: _searchController,
                         autofocus: true,
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
+                        onChanged: (value) => setState(() => _searchQuery = value),
                         decoration: InputDecoration(
                           hintText: "Search by brand...",
                           border: InputBorder.none,
@@ -96,14 +115,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (snapshot.hasError) {
                       return Center(child: Text("Error: ${snapshot.error}"));
                     }
+
                     final shoes = snapshot.data ?? [];
                     if (shoes.isEmpty) {
                       return const Center(child: Text("No shoes found."));
                     }
+
                     return GridView.builder(
                       itemCount: shoes.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
@@ -111,22 +131,24 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final shoe = shoes[index];
-                        // FIXED: Added GestureDetector to navigate to detail screen
+                        final isFavorite = widget.favoritelist.any((s) => s.id == shoe.id);
+
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ShoeDetailScreen(
+                                builder: (_) => ShoeDetailScreen(
                                   shoe: shoe,
-                                  onFavorite: () => widget.onAddToFavoritelist(shoe),
+                                  onFavorite: () => toggleFavorite(shoe),
                                 ),
                               ),
                             );
                           },
                           child: ShoeCard(
                             shoe: shoe,
-                            onFavorite: () => widget.onAddToFavoritelist(shoe),
+                            isFavorite: isFavorite,
+                            onFavorite: () => toggleFavorite(shoe),
                           ),
                         );
                       },

@@ -82,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
           .doc(user?.uid)
           .get(),
       builder: (context, snapshot) {
-        String name = "User";
+        String name = "";
         String email = user?.email ?? "";
         String photoUrl = "";
 
@@ -104,7 +104,7 @@ class ProfileScreen extends StatelessWidget {
                 radius: 35,
                 backgroundImage: photoUrl.isNotEmpty
                     ? AssetImage(photoUrl)
-                    : const AssetImage("user/profile.jpg") as ImageProvider,
+                    : const AssetImage("assets/user/profile.jpeg") as ImageProvider,
               ),
               const SizedBox(width: 15),
               Expanded(

@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder<DocumentSnapshot>(
       future: FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
       builder: (context, snapshot) {
-        String name = "User Name";
+        String name = "";
         String email = user?.email ?? "";
         String photoUrl = "";
 
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
             profileImage = NetworkImage(photoUrl);
           }
         } else {
-          profileImage = const AssetImage("user/profile.jpg");
+          profileImage = const AssetImage("assets/user/profile.jpeg");
         }
 
         return Row(
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
           context,
           MaterialPageRoute(
               builder: (_) =>
-                  SearchScreen(onAddToFavoritelist: widget.onAddToFavoritelist)),
+                  SearchScreen(favoritelist: widget.favoritelist, onAddToFavoritelist: widget.onAddToFavoritelist)),
         );
       },
       child: Container(
@@ -364,6 +364,7 @@ class _HomePageState extends State<HomePage> {
           child: ShoeCard(
             shoe: shoe,
             onFavorite: () => toggleFavorite(shoe),
+            isFavorite: shoe.isFavorite,
           ),
         );
       },

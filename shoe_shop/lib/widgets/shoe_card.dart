@@ -13,7 +13,7 @@ class ShoeCard extends StatelessWidget {
     required this.shoe,
     this.onFavorite,
     this.onDelete,
-    this.isFavoritelistMode = false,
+    this.isFavoritelistMode = false, required bool isFavorite,
   });
 
   String? getImage(String? url) {
