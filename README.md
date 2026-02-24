@@ -4,13 +4,15 @@ Course: Mobile Application (RUPP)
 Grade: E3Y4G26
 Group: 7
 
-===================================================================================================================================================================================================
+===========================================================================================================================================
 
 **📱 Project Overview**
 
 This project is a mobile e-commerce application developed using Flutter integrated with Firebase (Firestore API) as the backend service.
 
-The application functions as a Shoe Shop, allowing users to browse products, add items to favorites, manage a shopping cart, and place orders. Firebase Firestore is used to provide real-time data synchronization, ensuring that all updates (add, remove, modify) are instantly reflected across devices while maintaining data consistency.
+The application functions as a Shoe Shop, allowing users to browse products, add items to favorites, manage a shopping cart, and place orders. 
+Firebase Firestore is used to provide real-time data synchronization, ensuring that all updates (add, remove, modify) are instantly reflected 
+across devices while maintaining data consistency.
 
 *****************************************************************************************
 **🛠 Technologies Used**
@@ -33,7 +35,7 @@ The application functions as a Shoe Shop, allowing users to browse products, add
 
 🔐 **Test User Accounts**
 
-The following user accounts are available for testing:
+**The following user accounts are available for testing:
 =======================================================
 Name	        Email	              Password
 =======================================================
@@ -42,7 +44,7 @@ Tra	          tra@rupp.edu.kh     12345678
 Hongly	      hongly@rupp.edu.kh  12345678
 Piseth	      piseth@rupp.edu.kh  12345678
 Somnang	      somnang@rupp.edu.kh 12345678
-=======================================================
+=======================================================**
 
 *****************************************************************************************
 
@@ -91,4 +93,4 @@ Authorization will be granted upon request.
 - Real-time Data Updates with Firestore
 - User Profile Management
 
-===================================================================================================================================================================================================
+===========================================================================================================================================
