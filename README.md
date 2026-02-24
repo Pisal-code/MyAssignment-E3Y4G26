@@ -4,8 +4,7 @@ Course: Mobile Application (RUPP)
 Grade: E3Y4G26
 Group: 7
 
-===========================================================================================================================================
-
+===============================================================================================================
 **📱 Project Overview**
 
 This project is a mobile e-commerce application developed using Flutter integrated with Firebase (Firestore API) as the backend service.
@@ -33,18 +32,29 @@ across devices while maintaining data consistency.
 5. Somnang
 *****************************************************************************************
 
-🔐 **Test User Accounts**
+🔐 Test User Accounts
 
-**The following user accounts are available for testing:
-=======================================================
-Name	        Email	              Password
-=======================================================
-Pisal         sal@rupp.edu.kh     12345678
-Tra	          tra@rupp.edu.kh     12345678
-Hongly	      hongly@rupp.edu.kh  12345678
-Piseth	      piseth@rupp.edu.kh  12345678
-Somnang	      somnang@rupp.edu.kh 12345678
-=======================================================**
+The following accounts are available for testing:
+
+1. Pisal PON
+   Email: sal@rupp.edu.kh
+   Password: 12345678
+
+2. Tra
+   Email: tra@rupp.edu.kh
+   Password: 12345678
+
+3. Hongly
+   Email: hongly@rupp.edu.kh
+   Password: 12345678
+
+4. Piseth
+   Email: piseth@rupp.edu.kh
+   Password: 12345678
+
+5. Somnang
+   Email: somnang@rupp.edu.kh
+   Password: 12345678
 
 *****************************************************************************************
 
@@ -93,4 +103,4 @@ Authorization will be granted upon request.
 - Real-time Data Updates with Firestore
 - User Profile Management
 
-===========================================================================================================================================
+===============================================================================================================
