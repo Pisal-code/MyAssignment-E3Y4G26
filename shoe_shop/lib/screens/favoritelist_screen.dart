@@ -148,7 +148,7 @@ class FavoriteListItem extends StatelessWidget {
           children: [
             /// IMAGE
             Container(
-              width: 100, height: 100,
+              width: 120, height: 120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16), 
                 color: const Color(0xFFF3F4F6)
@@ -214,7 +214,7 @@ class FavoriteListItem extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Row(
                     children: [
                       Text(
@@ -222,7 +222,7 @@ class FavoriteListItem extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)
                       ),
                       if (shoe.oldPrice != null) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         Text(
                           "\$${shoe.oldPrice!.toStringAsFixed(0)}", 
                           style: const TextStyle(
@@ -234,7 +234,7 @@ class FavoriteListItem extends StatelessWidget {
                       ]
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   SizedBox(
                     width: double.infinity, height: 38,
                     child: ElevatedButton(

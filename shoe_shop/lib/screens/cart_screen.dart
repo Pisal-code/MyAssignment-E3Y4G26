@@ -120,7 +120,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text("My shopping cart", style: TextStyle(color: Colors.black, fontSize: 18)),
+        title: const Text("My shopping cart", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -177,7 +177,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   child: image.startsWith('http') ? Image.network(image, fit: BoxFit.contain) : Image.asset(image, fit: BoxFit.contain),
                 ),
               ),
-              const SizedBox(width: 15),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,10 +185,10 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                     Text(name, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
                     
                     // --- SIZE DISPLAYED HERE ---
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 3),
                     Text("Size: $size", style: const TextStyle(color: Colors.grey, fontSize: 14)),
                     
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text("\$${price.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -196,7 +196,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                         Text("\$${oldPrice.toStringAsFixed(0)}", style: const TextStyle(color: Colors.red, decoration: TextDecoration.lineThrough)),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 3),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
