@@ -93,6 +93,12 @@ If access to the database is required, please contact:
 
 Authorization will be granted upon request.
 
+=============================================================================================================
+
+UX & UI by Figma Link: https://www.figma.com/design/r3dFHma6XN2uUw5h6L9mWo/Untitled?node-id=0-1&t=4AH4b4s4e5qxJorf-1
+
+==============================================================================================================
+
 ✅ Key Features
 - User Authentication (Login / Logout)
 - Product Listing
@@ -103,4 +109,4 @@ Authorization will be granted upon request.
 - Real-time Data Updates with Firestore
 - User Profile Management
 
-===============================================================================================================
+==============================================================================================================
