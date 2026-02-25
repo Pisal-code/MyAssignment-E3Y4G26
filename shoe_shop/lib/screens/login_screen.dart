@@ -42,11 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (_) => const MainScreen()),
         );
       }
     } on FirebaseAuthException catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.black,
