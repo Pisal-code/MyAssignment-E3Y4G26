@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shoe_shop/models/shoe.dart';
+import 'package:shoe_shop/providers/favorite_provider.dart';
+import 'package:provider/provider.dart';
 import 'shoe_detail_screen.dart';
 
 class FavoritelistScreen extends StatelessWidget {
-  final String uid;
-
-  const FavoritelistScreen({super.key, required this.uid});
+  const FavoritelistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,46 +20,41 @@ class FavoritelistScreen extends StatelessWidget {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('shoes')
-            .where('is_favorite', isEqualTo: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+      body: Consumer<FavoriteProvider>(
+        builder: (context, favoriteProvider, child) {
+          final favorites = favoriteProvider.favorites;
 
-          final favoritelist = snapshot.data!.docs
-              .map((doc) => Shoe.fromMap(doc.data() as Map<String, dynamic>, docId: doc.id))
-              .toList();
+          if (favoriteProvider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-          if (favoritelist.isEmpty) {
+          if (favorites.isEmpty) {
             return const Center(child: Text("Your favorite list is empty"));
           }
 
           return ListView.separated(
             padding: const EdgeInsets.all(16),
-            itemCount: favoritelist.length,
+            itemCount: favorites.length,
             separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
-              final shoe = favoritelist[index];
+              final shoe = favorites[index];
 
               return FavoriteListItem(
                 shoe: shoe,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ShoeDetailScreen(shoe: shoe, onFavorite: () {}),
+                    builder: (_) => ShoeDetailScreen(
+                      shoe: shoe,
+                      onFavorite: () {},
+                    ),
                   ),
                 ),
                 onDelete: () async {
-                  await FirebaseFirestore.instance
-                      .collection('shoes')
-                      .doc(shoe.id)
-                      .update({'is_favorite': false});
+                  await favoriteProvider.removeFromFavorites(shoe.id);
                 },
                 onMoveToCart: () async {
                   // Check if shoe has a size selected
-                  // Using 'shoe.sizes' to match your provided code
                   if (shoe.sizes == null || shoe.sizes == "" || shoe.sizes == "N/A") {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Please select a size first")),
@@ -73,26 +67,12 @@ class FavoritelistScreen extends StatelessWidget {
                     );
                   } else {
                     try {
-                      final cartRef = FirebaseFirestore.instance
-                          .collection('cart')
-                          .doc(uid)
-                          .collection('items');
-
-                      await cartRef.add({
-                        'shoeId': shoe.id,
-                        'price': shoe.price,
-                        'oldPrice': shoe.oldPrice ?? shoe.price,
-                        'quantity': 1,
-                        'image': shoe.imageUrl, 
-                        'name': shoe.name,
-                        'size': shoe.sizes,
-                        'createdAt': FieldValue.serverTimestamp(),
-                      });
-
-                      await FirebaseFirestore.instance
-                          .collection('shoes')
-                          .doc(shoe.id)
-                          .update({'is_favorite': false});
+                      // Show message to add from shoe detail page
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Please add from shoe detail")),
+                        );
+                      }
                     } catch (e) {
                       debugPrint(e.toString());
                     }
@@ -155,9 +135,11 @@ class FavoriteListItem extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: shoe.imageUrl!.startsWith('http') 
+                child: shoe.imageUrl != null && shoe.imageUrl!.startsWith('http') 
                     ? Image.network(shoe.imageUrl!, fit: BoxFit.contain)
-                    : Image.asset(shoe.imageUrl!, fit: BoxFit.contain),
+                    : shoe.imageUrl != null 
+                        ? Image.asset(shoe.imageUrl!, fit: BoxFit.contain)
+                        : const Icon(Icons.image, size: 50, color: Colors.grey),
               ),
             ),
             const SizedBox(width: 16),
@@ -259,3 +241,4 @@ class FavoriteListItem extends StatelessWidget {
     );
   }
 }
+

@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
         onProfileTap: () => _goToProfile(),
         onCartTap: () => _goToCart(),
       ), // index 0 -> Home
-      FavoritelistScreen(uid: uid), // index 1 -> Favorite
+      const FavoritelistScreen(), // index 1 -> Favorite
       ShoppingCartScreen(uid: uid), // index 2 -> Cart
       const ProfileScreen(), // index 3 -> Profile
     ];
@@ -66,3 +66,4 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+

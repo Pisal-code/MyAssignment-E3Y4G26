@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'providers/auth_provider.dart';
+import 'providers/favorite_provider.dart';
 import 'screens/login_screen.dart';
 
 void main() async {
@@ -17,11 +20,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Shoe Shop',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const LoginScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Shoe Shop',
+        theme: ThemeData(primarySwatch: Colors.blue),
+        home: const LoginScreen(),
+      ),
     );
   }
 }
+

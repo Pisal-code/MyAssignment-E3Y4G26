@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import '../models/shoe.dart';
+import '../providers/favorite_provider.dart';
 import '../widgets/size_chip.dart';
 
 class ShoeDetailScreen extends StatefulWidget {
@@ -22,15 +24,8 @@ class _ShoeDetailScreenState extends State<ShoeDetailScreen> {
   final List<String> sizes = ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"];
 
   void toggleFavorite() async {
-    final newValue = !widget.shoe.isFavorite;
-    await FirebaseFirestore.instance
-        .collection('shoes')
-        .doc(widget.shoe.id.toString())
-        .update({'is_favorite': newValue});
-
-    setState(() {
-      widget.shoe.isFavorite = newValue;
-    });
+    final favoriteProvider = context.read<FavoriteProvider>();
+    await favoriteProvider.toggleFavorite(widget.shoe);
     widget.onFavorite();
   }
 
@@ -66,15 +61,13 @@ class _ShoeDetailScreenState extends State<ShoeDetailScreen> {
       });
     }
 
-    // REMOVE FROM FAVORITES since it was "moved" to cart
-    await FirebaseFirestore.instance
-        .collection('shoes')
-        .doc(widget.shoe.id.toString())
-        .update({'is_favorite': false});
+    // Remove from favorites if it was favorited (per-user favorites)
+    final favoriteProvider = context.read<FavoriteProvider>();
+    await favoriteProvider.removeFromFavorites(widget.shoe.id);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Moved to cart successfully")));
-      Navigator.pop(context); // Go back to Favorite list
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Added to cart successfully")));
+      Navigator.pop(context);
     }
   }
 
@@ -130,7 +123,12 @@ class _ShoeDetailScreenState extends State<ShoeDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _circleBtn(Icons.arrow_back, () => Navigator.pop(context)),
-          _circleBtn(widget.shoe.isFavorite ? Icons.favorite : Icons.favorite_border, toggleFavorite, iconColor: widget.shoe.isFavorite ? Colors.red : Colors.black),
+          Consumer<FavoriteProvider>(
+            builder: (context, favoriteProvider, child) {
+              final isFav = favoriteProvider.isFavorite(widget.shoe.id);
+              return _circleBtn(isFav ? Icons.favorite : Icons.favorite_border, toggleFavorite, iconColor: isFav ? Colors.red : Colors.black);
+            },
+          ),
         ],
       ),
     );
@@ -177,7 +175,7 @@ class _ShoeDetailScreenState extends State<ShoeDetailScreen> {
         child: ElevatedButton(
           onPressed: addToCart,
           style: ElevatedButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
-          child: Text("Move to cart ($quantity)", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          child: Text("Add to cart ($quantity)", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -201,3 +199,4 @@ class _ShoeDetailScreenState extends State<ShoeDetailScreen> {
     );
   }
 }
+

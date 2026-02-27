@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/shoe.dart';
+import '../providers/favorite_provider.dart';
 import '../screens/shoe_detail_screen.dart';
 
 class ShoeCard extends StatelessWidget {
   final Shoe shoe;
-  final VoidCallback? onFavorite; // for grid/home
-  final VoidCallback? onDelete; // for favorite list
-  final bool isFavoritelistMode; // true = horizontal/list style
+  final VoidCallback? onFavorite;
+  final VoidCallback? onDelete;
+  final bool isFavoritelistMode;
 
   const ShoeCard({
     super.key,
     required this.shoe,
     this.onFavorite,
     this.onDelete,
-    this.isFavoritelistMode = false, required bool isFavorite,
+    this.isFavoritelistMode = false,
+    required bool isFavorite,
   });
 
   String? getImage(String? url) {
@@ -119,93 +122,103 @@ class ShoeCard extends StatelessWidget {
           ),
         );
       },
-      child: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.white,
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                  color: Colors.black12,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Center(
-                    child: imagePath != null
-                        ? imagePath.startsWith("http")
-                            ? Image.network(imagePath, fit: BoxFit.contain)
-                            : Image.asset(imagePath, fit: BoxFit.contain)
-                        : const Icon(Icons.broken_image, size: 50),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  shoe.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        "\$${shoe.price.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
+      child: Consumer<FavoriteProvider>(
+        builder: (context, favoriteProvider, child) {
+          final isFav = favoriteProvider.isFavorite(shoe.id);
+          
+          return Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                      color: Colors.black12,
                     ),
-                    if (shoe.oldPrice != null) ...[
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          "\$${shoe.oldPrice!.toStringAsFixed(2)}",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
-              ],
-            ),
-          ),
-
-          // ❤️ Favorite Button
-          if (onFavorite != null)
-            Positioned(
-              top: 6,
-              right: 6,
-              child: IconButton(
-                icon: Icon(
-                  shoe.isFavorite
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: shoe.isFavorite ? Colors.red : Colors.black,
-                  size: 20,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: imagePath != null
+                            ? imagePath.startsWith("http")
+                                ? Image.network(imagePath, fit: BoxFit.contain)
+                                : Image.asset(imagePath, fit: BoxFit.contain)
+                            : const Icon(Icons.broken_image, size: 50),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      shoe.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            "\$${shoe.price.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        if (shoe.oldPrice != null) ...[
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              "\$${shoe.oldPrice!.toStringAsFixed(2)}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
-                onPressed: onFavorite,
               ),
-            ),
-        ],
+
+              // ❤️ Favorite Button
+              if (onFavorite != null)
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? Colors.red : Colors.black,
+                      size: 20,
+                    ),
+                    onPressed: () async {
+                      await favoriteProvider.toggleFavorite(shoe);
+                      if (onFavorite != null) {
+                        onFavorite!();
+                      }
+                    },
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
 }
+
